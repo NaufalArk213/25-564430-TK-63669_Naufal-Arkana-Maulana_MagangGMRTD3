@@ -1,23 +1,19 @@
-# Penjelasan Solusi Studi Kasus GMRT (Day 1)
+# Penjelasan Solusi Tugas Magang GMRT (Day 2)
 
-Berikut adalah penjelasan singkat mengenai logika dan cara kerja dari program yang telah dibuat untuk menyelesaikan Problem 1 dan Problem 2.
+Berikut ini adalah penjelasan singkat mengenai pembahasan cara kerja dari program yang telah dibuat untuk menyelesaikan Tugas Computer Vision dan Tugas ROS 2.
 
----
+### Tugas Computer Vision: Deteksi 3 Objek Real-Time
+Pada tugas ini, program digunakan untuk mendeteksi 3 objek secara real-time dari tampilan kamera webcam menggunakan model YOLOv8n dan library OpenCV.
 
-### Problem 1: Penyeimbangan Barang antar Kotak
-Di problem ini, tugas robot adalah memindahkan barang 2 kg dan 1 kg ke 3 kotak penyimpanan agar jumlah barang dan total berat di tiap kotak menjadi sama persis.
+Logika penyelesaian:
+- Pemrosesan video dari webcam dilakukan per frame menggunakan `cv.VideoCapture(0)`.
+- Deteksi dibatasi secara khusus hanya pada 3 kelas objek COCO yaitu orang (`0`), botol (`39`), dan mouse (`64`) dengan mengatur filter `classes=[0, 39, 64]`.
+- Gambar hasil anotasi (Bounding Box, Nama Objek, dan Confidence Score) ditampilkan secara live ke jendela layar menggunakan `results[0].plot()` sampai pengguna menekan tombol `q` untuk keluar.
 
-**Logika Penyelesaian:**
-- Pertama, dicek dulu apakah jumlah barang 2 kg (`n`) dan 1 kg (`m`) masing-masing habis dibagi 3. Jika tidak, kondisi seimbang tidak mungkin dicapai sehingga program langsung mengeluarkan `-1`.
-- Jika bisa dibagi 3, program menghitung langkah pengangkutan robot ke dua kotak tujuan.
-- Supaya langkahnya minimal, program membandingkan dua opsi pengangkatan: pengiriman terpisah (bolak-balik per kotak) dan pengiriman digabung (sekali angkut membawa barang untuk dua kotak sekaligus jika kapasitas robot cukup). Opsi dengan jumlah langkah paling sedikit yang akan dipilih.
+### Tugas ROS 2: Otomatisasi Lintasan TurtleSim 
+Pada tugas ini, program mengendalikan gerakan kura-kura simulator TurtleSim secara otomatis untuk membentuk lintasan berbentuk persegi 4 sisi tanpa kontrol manual.
 
----
-
-### Problem 2: Manajemen Energi Baterai Robot
-Problem ini meminta robot menyelesaikan misi sebanyak mungkin secara berurutan dengan batas kapasitas baterai dan kuota *charging* tertentu.
-
-**Logika Penyelesaian:**
-- Misi diproses satu per satu secara berurutan dari awal sampai akhir.
-- Strateginya adalah **menunda isi daya**: robot hanya akan *charging* saat energi baterai yang tersisa kurang dari kebutuhan misi yang mau dijalankan. Ini dilakukan agar kuota *charging* tidak cepat habis dan energi baterai tidak terbuang sia-sia karena terbentur kapasitas maksimum (`C`).
-- Jika baterai sudah di-charge sampai maksimal tetapi masih tidak cukup untuk misi tersebut, perulangan langsung berhenti dan program menampilkan total misi yang berhasil diselesaikan.
+Logika penyelesaian:
+- Node ROS 2 membuat publisher ke topik `/turtle1/cmd_vel` menggunakan pesan `geometry_msgs/msg/Twist`.
+- Pergerakan dibagi secara modular menjadi fungsi gerak lurus (`move_forward`) dan fungsi rotasi 90 derajat (`turn_90_degrees`).
+- Proses diulang sebanyak 4 kali untuk membentuk 4 sisi persegi secara presisi, lalu robot otomatis berhenti di posisi akhir setelah selesai.
