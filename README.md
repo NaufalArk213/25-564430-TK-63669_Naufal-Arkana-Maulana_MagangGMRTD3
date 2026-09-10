@@ -1,19 +1,20 @@
-# Penjelasan Solusi Tugas Magang GMRT (Day 2)
+# Penjelasan Solusi Tugas Magang GMRT (Day 3)
 
-Berikut ini adalah penjelasan singkat mengenai pembahasan cara kerja dari program yang telah dibuat untuk menyelesaikan Tugas Computer Vision dan Tugas ROS 2.
+Berikut ini adalah penjelasan singkat mengenai pembahasan cara kerja dari program yang telah dibuat untuk menyelesaikan Tugas Day 3.
 
-### Tugas Computer Vision: Deteksi 3 Objek Real-Time
-Pada tugas ini, program digunakan untuk mendeteksi 3 objek secara real-time dari tampilan kamera webcam menggunakan model YOLOv8n dan library OpenCV.
-
-Logika penyelesaian:
-- Pemrosesan video dari webcam dilakukan per frame menggunakan `cv.VideoCapture(0)`.
-- Deteksi dibatasi secara khusus hanya pada 3 kelas objek COCO yaitu orang (`0`), botol (`39`), dan mouse (`64`) dengan mengatur filter `classes=[0, 39, 64]`.
-- Gambar hasil anotasi (Bounding Box, Nama Objek, dan Confidence Score) ditampilkan secara live ke jendela layar menggunakan `results[0].plot()` sampai pengguna menekan tombol `q` untuk keluar.
-
-### Tugas ROS 2: Otomatisasi Lintasan TurtleSim 
-Pada tugas ini, program mengendalikan gerakan kura-kura simulator TurtleSim secara otomatis untuk membentuk lintasan berbentuk persegi 4 sisi tanpa kontrol manual.
+Tugas Following-Axis Servo Motor & Motion Detection ESP32
+Pada tugas ini, program C++ Arduino Framework digunakan untuk mengontrol sistem 5 motor servo berbasis pembacaan sensor akselerometer/gyroscope MPU6050 dan sensor gerak PIR pada ESP32.
 
 Logika penyelesaian:
-- Node ROS 2 membuat publisher ke topik `/turtle1/cmd_vel` menggunakan pesan `geometry_msgs/msg/Twist`.
-- Pergerakan dibagi secara modular menjadi fungsi gerak lurus (`move_forward`) dan fungsi rotasi 90 derajat (`turn_90_degrees`).
-- Proses diulang sebanyak 4 kali untuk membentuk 4 sisi persegi secara presisi, lalu robot otomatis berhenti di posisi akhir setelah selesai.
+- Pemrosesan data sensor MPU6050 dilakukan secara berkala untuk membaca nilai akselerasi (`acceleration`) dan kecepatan sudut gyroscope (`gyro`).
+- Sudut kemiringan **Roll** dihitung menggunakan `atan2(accel.acceleration.y, accel.acceleration.z)` untuk menggerakkan Servo 1 & Servo 2 **melawan arah kemiringan** (`INITIAL_ANGLE - roll`).
+- Sudut kemiringan **Pitch** dihitung menggunakan `atan2(-accel.acceleration.x, sqrt(...))` untuk menggerakkan Servo 3 & Servo 4 **searah kemiringan** (`INITIAL_ANGLE + pitch`).
+- Kecepatan rotasi **Yaw** memicu Servo 5 berputar $\pm 45^\circ$, menahan posisi selama 1 detik menggunakan penundaan non-blocking `millis()`, kemudian otomatis reset ke posisi awal $90^\circ$.
+- Apabila PIR Sensor mendeteksi pergerakan eksternal (`digitalRead(PIN_PIR_SENSOR) == HIGH`), seluruh servo secara serentak berputar ke sudut alert $180^\circ$ selama 1.5 detik sebelum kembali ke posisi awal $90^\circ$.
+
+
+Link Simulasi Wokwi & Rekaman Video (Day 3)
+
+- **Link Simulasi Wokwi Online**: [https://wokwi.com/projects/474785487673409537]
+- **Link Video Rekaman GDrive (.webm)**: [https://drive.google.com/file/d/15-97bK_w-NjBFwQ6r-JXdMVBJ9ZfORFC/view?usp=sharing]
+
